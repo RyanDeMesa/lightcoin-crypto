@@ -2,11 +2,23 @@ class Account {
 
   constructor(username) {
     this.username = username;
-    // Have the account balance start at $0 since that makes more sense.
-    this.balance = 500;
+    this.transactions = [];
+  }
+
+  get balance() {
+    let balance = 0;
+    for (let t of this.transactions) {
+      balance += t.value;
+    }
+    return balance;
+  }
+
+  addTransaction(transaction) {
+    this.transactions.push(transaction);
   }
 
 }
+
 
 class Transaction {
 
@@ -16,7 +28,8 @@ class Transaction {
   }
 
   commit() {
-    this.account.balance += this.value;
+    this.time = new Date();
+    this.account.addTransaction(this);
   }
 
 }
@@ -32,7 +45,7 @@ class Withdrawal extends Transaction{
 class Deposit extends Transaction{
 
   get value() {
-    return -this.amount;
+    return this.amount;
   }
 
 }
@@ -52,3 +65,5 @@ const t2 = new Withdrawal(150.00, myAccount);
 t2.commit();
 
 console.log('Ending Balance:', myAccount.balance);
+
+console.log("Account's Transaction History: ", myAccount.transactions);
